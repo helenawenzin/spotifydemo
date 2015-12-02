@@ -31,7 +31,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-freemarker')
     compile('org.springframework.boot:spring-boot-starter-jersey')
     compile('org.springframework.boot:spring-boot-starter-web')
-    testCompile('org.springframework.boot:spring-boot-starter-test') 
+    compile('se.michaelthelin.spotify:spotify-web-api-java:1.5.0')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 
