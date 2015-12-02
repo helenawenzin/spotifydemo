@@ -4,10 +4,12 @@ import com.wrapper.spotify.models.Album;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import se.nackademin.spotifydemo.api.SpotifyAPI;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -30,5 +32,17 @@ public class WelcomeController {
     @ResponseBody
     String about() {
         return "Helena är bäst";
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    @ResponseBody
+    public String login() {
+        //TODO: implement
+        return "Now we should login! :-)";
+    }
+
+    @RequestMapping(value="/login", method= RequestMethod.GET)
+    public String loginPage() {
+        return "login";
     }
 }
