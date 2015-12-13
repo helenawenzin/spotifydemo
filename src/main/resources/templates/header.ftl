@@ -50,7 +50,7 @@
         <div class="col-sm-2 sidenav" id="leftsidebar">
             </p>
             <hr>
-            <h3>Parta med Helena!</h3>
+            <h3>Party with Helena!</h3>
 
             <iframe src="https://embed.spotify.com/?uri=spotify:user:113111420:playlist:6HeJn9ByWHLtNaB9OcXQxL" width="250" height="80" frameborder="0" allowtransparency="true"></iframe>
 

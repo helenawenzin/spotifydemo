@@ -3,6 +3,8 @@ package se.nackademin.spotifydemo.web;
 import com.wrapper.spotify.exceptions.BadRequestException;
 import com.wrapper.spotify.exceptions.WebApiException;
 import com.wrapper.spotify.models.Album;
+import com.wrapper.spotify.models.Artist;
+import com.wrapper.spotify.models.Image;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,33 @@ public class WelcomeController {
         model.put("id", id);
         model.put("playlist", spotifyAPI.getPlaylist(id));
         return "playlist";
+    }
+
+    @RequestMapping("/artist")
+    public String artist(@RequestParam("id") String id, Map<String, Object> model) throws IOException, WebApiException {
+        model.put("name", spotifyAPI.getUser().getDisplayName());
+        model.put("id", id);
+        Artist artist = spotifyAPI.getArtist(id);
+        model.put("artist", artist);
+        model.put("image", getRightSizedImage(artist));
+        return "artist";
+    }
+
+    private Image getRightSizedImage(Artist artist) {
+        for (Image image : artist.getImages()) {
+            if (image.getWidth() == 200) {
+                return image;
+            }
+        }
+        return getDefaultImage();
+    }
+
+    private Image getDefaultImage() {
+        Image image = new Image();
+        image.setUrl("http://bookshelf.mml.ox.ac.uk/wp-uploads/2014/12/batman_silhouette_by_icedragon529.jpg");
+        image.setWidth(200);
+        image.setHeight(260);
+        return image;
     }
 
     @RequestMapping("/about")

@@ -57,6 +57,10 @@ public class SpotifyAPI {
         return playlistsPage.getItems();
     }
 
+    public Artist getArtist(String id) throws IOException, WebApiException {
+        return api.getArtist(id).build().get();
+    }
+
     public String getUsersPlaylists() throws IOException, WebApiException {
 
         String playlistsNames = "";
