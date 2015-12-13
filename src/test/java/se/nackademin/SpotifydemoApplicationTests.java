@@ -32,10 +32,10 @@ public class SpotifydemoApplicationTests {
 	@Test
 	public void testFreeMarkerTemplate() throws Exception {
 		ResponseEntity<String> entity = new TestRestTemplate()
-				.getForEntity("http://localhost:" + port, String.class);
+				.getForEntity("http://localhost:" + port + "/about", String.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertTrue("Wrong body:\n" + entity.getBody(),
-				entity.getBody().contains("Hejsan!"));
+				entity.getBody().contains("You are"));
 	}
 
 }

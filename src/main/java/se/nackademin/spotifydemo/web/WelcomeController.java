@@ -32,18 +32,42 @@ public class WelcomeController {
             Album album = spotifyAPI.getAlbum();
             model.put("album", album.getName() + " by " + album.getArtists().get(0).getName());
             model.put("name", spotifyAPI.getUser().getDisplayName());
-            model.put("playlist", spotifyAPI.getPlaylist().getName());
+            model.put("playlist", spotifyAPI.getPlaylist("0l6DqYMkgeqrkdM8EEB0YE").getName());
             model.put("playlists", spotifyAPI.getPlayLists());
             return "welcome";
         } catch (BadRequestException e) {
-            return "redirect:/login";
+            if (e.getMessage().equals("401")) {
+                System.out.println(e);
+                System.out.println("I think we are logged out. Let's go to /login");
+                return "redirect:/login";
+            }
+            throw new BadRequestException(e.getMessage());
         }
+    }
+
+    @RequestMapping("/playlist")
+    public String playlist(@RequestParam("id") String id, Map<String, Object> model) throws IOException, WebApiException {
+        model.put("name", spotifyAPI.getUser().getDisplayName());
+        model.put("id", id);
+        model.put("playlist", spotifyAPI.getPlaylist(id));
+        return "playlist";
     }
 
     @RequestMapping("/about")
     @ResponseBody
     String about() {
-        return "Helena är bäst";
+        boolean isLoggedIn;
+        try {
+            spotifyAPI.getUser();
+            isLoggedIn = true;
+        } catch (Exception e) {
+            isLoggedIn = false;
+        }
+        if (isLoggedIn) {
+            return "You are logged in!";
+        } else {
+            return "You are not logged in!";
+        }
     }
 
     @RequestMapping(value="/login", method=RequestMethod.GET)
@@ -52,14 +76,16 @@ public class WelcomeController {
         return "redirect:" + url;
     }
 
-    @RequestMapping(value="/logout", method=RequestMethod.GET)
+    @RequestMapping(value="/logout")
     public String logout() {
+        spotifyAuthorizer.getApi().setAccessToken("");
+        spotifyAuthorizer.getApi().setRefreshToken("");
         return "redirect:/about";
     }
 
-
     @RequestMapping("/callback")
     String callback(@RequestParam("code") String code, @RequestParam String state) {
+        System.out.println("We got a callback from Spotify!");
         //TODO: Assert state in a nicer way?
         if (!spotifyAuthorizer.state.equals(state)) {
             throw new RuntimeException("State check failed. Possible Cross Site Request Forgery.");

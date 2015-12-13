@@ -43,10 +43,10 @@ public class SpotifyAPI {
         return api.getMe().build().get();
     }
 
-    public Playlist getPlaylist() throws IOException, WebApiException {
+    public Playlist getPlaylist(String playlistId) throws IOException, WebApiException {
         User user = getUser();
         String userID = user.getId();
-        return api.getPlaylist(userID, "0l6DqYMkgeqrkdM8EEB0YE")
+        return api.getPlaylist(userID, playlistId)
                 .build()
                 .get();
     }
