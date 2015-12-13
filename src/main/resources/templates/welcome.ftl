@@ -30,6 +30,8 @@
             padding-top: 20px;
             background-color: #f1f1f1;
             height: 100%;
+            width: inherit;
+            position: relative;
         }
 
         /* Set black background color, white text and some padding */
@@ -70,8 +72,6 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -82,10 +82,13 @@
 
 <div class="container-fluid text-center">
     <div class="row content">
-        <div class="col-sm-2 sidenav">
-            <p><a href="#">Link</a></p>
-            <p><a href="#">Link</a></p>
-            <p><a href="#">Link</a></p>
+        <div class="col-sm-2 sidenav" id="leftsidebar">
+            </p>
+            <hr>
+            <h3>Parta med Helena!</h3>
+
+            <iframe src="https://embed.spotify.com/?uri=spotify:user:113111420:playlist:6HeJn9ByWHLtNaB9OcXQxL" width="250" height="80" frameborder="0" allowtransparency="true"></iframe>
+
         </div>
         <div class="col-sm-8 text-left">
             <h1>Welcome</h1>
@@ -97,16 +100,22 @@
                 <br>
                 Album: ${album}
                 <br>
+                Playlist: ${playlist}
+                <br>
+                <br>
+                Playlists available:
 
-            </p>
-            <hr>
-            <h3>Test</h3>
-            <p>Lorem ipsum...</p>
+                <#list playlists as playlist>
+                <p><a href="#">${playlist.name}</a>
+                <#else>
+                <p>No playlists
+                </#list>
+
         </div>
         <div class="col-sm-2 sidenav">
-            <div class="logout">
-                <button type="button" class="btn btn-danger">Logout</button>
-            </div>
+
+                <button type="button" class="btn btn-danger" id="logoutbutton">Logout</button>
+
         </div>
     </div>
 </div>

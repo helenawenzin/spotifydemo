@@ -4,11 +4,11 @@ import com.wrapper.spotify.Api;
 import com.wrapper.spotify.exceptions.WebApiException;
 import com.wrapper.spotify.methods.AlbumRequest;
 import com.wrapper.spotify.methods.PlaylistRequest;
-import com.wrapper.spotify.models.Album;
-import com.wrapper.spotify.models.Playlist;
-import com.wrapper.spotify.models.User;
+import com.wrapper.spotify.methods.UserPlaylistsRequest;
+import com.wrapper.spotify.models.*;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SpotifyAPI {
 
@@ -49,6 +49,34 @@ public class SpotifyAPI {
         return api.getPlaylist(userID, "0l6DqYMkgeqrkdM8EEB0YE")
                 .build()
                 .get();
+    }
+
+    public List<SimplePlaylist> getPlayLists() throws IOException, WebApiException {
+        final UserPlaylistsRequest request = api.getPlaylistsForUser(getUser().getId()).build();
+        final Page<SimplePlaylist> playlistsPage = request.get();
+        return playlistsPage.getItems();
+    }
+
+    public String getUsersPlaylists() throws IOException, WebApiException {
+
+        String playlistsNames = "";
+        User user = getUser();
+        String userID = user.getId();
+
+        final UserPlaylistsRequest request = api.getPlaylistsForUser(userID).build();
+
+        try {
+            final Page<SimplePlaylist> playlistsPage = request.get();
+
+            for (SimplePlaylist playlist : playlistsPage.getItems()) {
+                playlistsNames = playlistsNames + " : " + playlist.getName();
+                System.out.println(playlist.getName());
+            }
+        } catch (Exception e) {
+            System.out.println("Something went wrong!" + e.getMessage());
+        }
+
+        return playlistsNames;
     }
 }
 

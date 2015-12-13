@@ -1,5 +1,5 @@
-footer {
-    background-color: #00ffcc;
-    color: white;
-    padding: 19px;
+#logoutbutton {
+    margin-bottom: 30px;
+    position: absolute;
+    bottom: 0;
 }
