@@ -22,7 +22,6 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class WelcomeController {
 
-    private String message = "Hejsan!";
     private SpotifyAuthorizer spotifyAuthorizer = new SpotifyAuthorizer();
     private SpotifyAPI spotifyAPI = new SpotifyAPI(spotifyAuthorizer.getApi());
 
@@ -30,11 +29,8 @@ public class WelcomeController {
     public String welcome(Map<String, Object> model) throws IOException, WebApiException {
         try {
             model.put("time", new Date());
-            model.put("message", this.message);
             Album album = spotifyAPI.getAlbum();
-            model.put("album", album.getName() + " by " + album.getArtists().get(0).getName());
             model.put("name", spotifyAPI.getUser().getDisplayName());
-            model.put("playlist", spotifyAPI.getPlaylist("0l6DqYMkgeqrkdM8EEB0YE").getName());
             model.put("playlists", spotifyAPI.getPlayLists());
             return "welcome";
         } catch (BadRequestException e) {

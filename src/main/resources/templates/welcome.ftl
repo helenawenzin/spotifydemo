@@ -1,18 +1,12 @@
 <#include "header.ftl">
 
-            <h1>Welcome</h1>
-            <p>Date: ${time?date}
+            <h1>Welcome to your Spotify page</h1>
+
+            <p>Today is: ${time?date}
                 <br>
-                Time: ${time?time}
+
                 <br>
-                Message: ${message}
-                <br>
-                Album: ${album}
-                <br>
-                Playlist: ${playlist}
-                <br>
-                <br>
-                Playlists available:
+                Your playlists!
 
                 <#list playlists as playlist>
                 <p><a href="/playlist?id=${playlist.id}">${playlist.name}</a>
