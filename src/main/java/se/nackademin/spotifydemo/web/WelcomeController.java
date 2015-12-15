@@ -2,7 +2,6 @@ package se.nackademin.spotifydemo.web;
 
 import com.wrapper.spotify.exceptions.BadRequestException;
 import com.wrapper.spotify.exceptions.WebApiException;
-import com.wrapper.spotify.models.Album;
 import com.wrapper.spotify.models.Artist;
 import com.wrapper.spotify.models.Image;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -29,7 +28,6 @@ public class WelcomeController {
     public String welcome(Map<String, Object> model) throws IOException, WebApiException {
         try {
             model.put("time", new Date());
-            Album album = spotifyAPI.getAlbum();
             model.put("name", spotifyAPI.getUser().getDisplayName());
             model.put("playlists", spotifyAPI.getPlayLists());
             return "welcome";
@@ -58,6 +56,7 @@ public class WelcomeController {
         Artist artist = spotifyAPI.getArtist(id);
         model.put("artist", artist);
         model.put("image", getRightSizedImage(artist));
+        model.put("albums", spotifyAPI.getAlbums(id));
         return "artist";
     }
 

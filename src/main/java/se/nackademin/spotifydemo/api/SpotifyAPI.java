@@ -2,9 +2,7 @@ package se.nackademin.spotifydemo.api;
 
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.exceptions.WebApiException;
-import com.wrapper.spotify.methods.AlbumRequest;
-import com.wrapper.spotify.methods.PlaylistRequest;
-import com.wrapper.spotify.methods.UserPlaylistsRequest;
+import com.wrapper.spotify.methods.*;
 import com.wrapper.spotify.models.*;
 
 import java.io.IOException;
@@ -22,21 +20,11 @@ public class SpotifyAPI {
         this.api = api;
     }
 
-    public Album getAlbum() {
+    public List<SimpleAlbum> getAlbums(String id) throws IOException, WebApiException {
 
-        // Create a request object for the type of request you want to make
-        AlbumRequest request = api.getAlbum("7e0ij2fpWaxOEHv5fUYZjd").build();
-
-        // Retrieve an album
-        Album album;
-        try {
-            album = request.get();
-        } catch (Exception e) {
-            //TODO: Use a log framework (log4j?)
-            System.out.println("Could not get albums.");
-            return new Album();
-        }
-        return album;
+        final AlbumsForArtistRequest request = api.getAlbumsForArtist(id).build();
+        final Page<SimpleAlbum> albumsFromArtist = request.get();
+        return albumsFromArtist.getItems();
     }
 
     public User getUser() throws IOException, WebApiException {
