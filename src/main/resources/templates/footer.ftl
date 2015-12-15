@@ -2,7 +2,7 @@
 </div>
 <div class="col-sm-2 sidenav" id="rightsidebar">
 
-    <form action="/logout" method="post"><input type="submit" class="btn btn-danger" id="logoutbutton" value="Logout" /></form>
+
 
 </div>
 </div>

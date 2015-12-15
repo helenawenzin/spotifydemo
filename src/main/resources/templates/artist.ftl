@@ -17,13 +17,22 @@
 
     <img src="${image.url}" width="${image.width}" height="${image.height}"/>
 
-    <p> Available albums for this artist:
-    <br>
+    <h2>Available albums</h2>
+    <ul>
     <#list albums as album>
-        <p> <#t> * ${album.name}
+        <li>${album.name}</li>
     <#else>
-        <p>No albums available
+        <li>No albums available</li>
     </#list>
+    </ul>
+    <h2>Singles</h2>
+    <ul>
+    <#list singles as single>
+        <li>${single.name}</li>
+    <#else>
+        <li>No singles available</li>
+    </#list>
+    </ul>
 
 <#include "footer.ftl">
 

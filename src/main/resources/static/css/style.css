@@ -17,7 +17,8 @@
 }
 
 #rightsidebar{
-    background-color: white;
+    background-image: url("/images/background.jpg");
+    background-repeat: repeat;
 }
 
 
@@ -37,8 +38,6 @@ footer {
     .row.content {height:auto;}
 }
 
-#logoutbutton {
-    margin-bottom: 30px;
-    position: absolute;
-    bottom: 0;
+#middleEarth {
+
 }

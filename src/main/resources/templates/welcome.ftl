@@ -15,7 +15,7 @@
             <p><b>Be up to date with what</b></p>
             <p><b>is playing right now!</b></p>
         </div>
-        <div class="col-sm-8 text-left">
+        <div class="col-sm-8 text-left" id="middleEarth">
 
 
             <h1>Welcome to your Spotify page</h1>
@@ -23,11 +23,17 @@
             <p>Today is: ${time?date}
                 <br>
 
-                <br>
-                Your playlists!
+                <h2>Your playlists</h2>
 
                 <#list playlists as playlist>
-                <p><a href="/playlist?id=${playlist.id}">${playlist.name}</a>
+                <p>
+                <div style="vertical-align: middle">
+                    <#list playlist.images as image>
+                        <img src="${image.url}" width="100"/>
+                        <#break>
+                    </#list>
+                    <a href="/playlist?id=${playlist.id}&owner=${playlist.owner.id}">${playlist.name}</a>
+                </div>
                 <#else>
                 <p>No playlists
                 </#list>

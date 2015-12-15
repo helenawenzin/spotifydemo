@@ -2,11 +2,13 @@ package se.nackademin.spotifydemo.api;
 
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.exceptions.WebApiException;
-import com.wrapper.spotify.methods.*;
+import com.wrapper.spotify.methods.AlbumsForArtistRequest;
+import com.wrapper.spotify.methods.UserPlaylistsRequest;
 import com.wrapper.spotify.models.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpotifyAPI {
 
@@ -21,7 +23,21 @@ public class SpotifyAPI {
     }
 
     public List<SimpleAlbum> getAlbums(String id) throws IOException, WebApiException {
+        return getAlbumsFilteredByType(id, AlbumType.ALBUM);
+    }
 
+    public List<SimpleAlbum> getSingles(String id) throws IOException, WebApiException {
+        return getAlbumsFilteredByType(id, AlbumType.SINGLE);
+    }
+
+    private List<SimpleAlbum> getAlbumsFilteredByType(String artistId, AlbumType type) throws IOException, WebApiException {
+        return getAlbumsAndSingles(artistId)
+                .stream()
+                .filter(item -> item.getAlbumType().equals(type))
+                .collect(Collectors.toList());
+    }
+
+    public List<SimpleAlbum> getAlbumsAndSingles(String id) throws IOException, WebApiException {
         final AlbumsForArtistRequest request = api.getAlbumsForArtist(id).build();
         final Page<SimpleAlbum> albumsFromArtist = request.get();
         return albumsFromArtist.getItems();
@@ -31,9 +47,19 @@ public class SpotifyAPI {
         return api.getMe().build().get();
     }
 
+    public String getUserDisplayName() throws IOException, WebApiException {
+        return getUser().getDisplayName() != null ? getUser().getDisplayName() : getUser().getId();
+    }
+
     public Playlist getPlaylist(String playlistId) throws IOException, WebApiException {
         User user = getUser();
         String userID = user.getId();
+        return api.getPlaylist(userID, playlistId)
+                .build()
+                .get();
+    }
+
+    public Playlist getPlaylist(String userID, String playlistId) throws IOException, WebApiException {
         return api.getPlaylist(userID, playlistId)
                 .build()
                 .get();
@@ -49,26 +75,5 @@ public class SpotifyAPI {
         return api.getArtist(id).build().get();
     }
 
-    public String getUsersPlaylists() throws IOException, WebApiException {
-
-        String playlistsNames = "";
-        User user = getUser();
-        String userID = user.getId();
-
-        final UserPlaylistsRequest request = api.getPlaylistsForUser(userID).build();
-
-        try {
-            final Page<SimplePlaylist> playlistsPage = request.get();
-
-            for (SimplePlaylist playlist : playlistsPage.getItems()) {
-                playlistsNames = playlistsNames + " : " + playlist.getName();
-                System.out.println(playlist.getName());
-            }
-        } catch (Exception e) {
-            System.out.println("Something went wrong!" + e.getMessage());
-        }
-
-        return playlistsNames;
-    }
 }
 

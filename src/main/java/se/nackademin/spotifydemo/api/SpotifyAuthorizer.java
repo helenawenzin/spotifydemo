@@ -5,12 +5,15 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
 public class SpotifyAuthorizer {
+    private static final Logger LOGGER = LogManager.getLogger(SpotifyAuthorizer.class);
 
     /* Set a state. This is used to prevent cross site request forgeries. */
     public final String state = "xsrf-helenas-heliga-hemlighet-" + Instant.now().toString();
@@ -32,7 +35,7 @@ public class SpotifyAuthorizer {
 
     public String getURL() {
         /* Set the necessary scopes that the application will need from the user */
-        final List<String> scopes = Arrays.asList("user-read-private", "user-read-email");
+        final List<String> scopes = Arrays.asList("user-read-private", "user-read-email", "playlist-read-private");
 
         String authorizeURL = api.createAuthorizeURL(scopes, state);
 
@@ -55,9 +58,9 @@ public class SpotifyAuthorizer {
             @Override
             public void onSuccess(AuthorizationCodeCredentials authorizationCodeCredentials) {
                 /* The tokens were retrieved successfully! */
-                System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
-                System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
-                System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
+                LOGGER.info("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
+                LOGGER.info("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
+                LOGGER.info("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
 
                 /* Set the access token and refresh token so that they are used whenever needed */
                 api.setAccessToken(authorizationCodeCredentials.getAccessToken());
@@ -68,7 +71,7 @@ public class SpotifyAuthorizer {
             public void onFailure(Throwable throwable) {
                 /* Let's say that the client id is invalid, or the code has been used more than once,
                 * the request will fail. Why it fails is written in the throwable's message. */
-                System.out.println(throwable.getMessage());
+                LOGGER.error(throwable.getMessage());
             }
         });
     }

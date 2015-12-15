@@ -4,6 +4,8 @@ import com.wrapper.spotify.exceptions.BadRequestException;
 import com.wrapper.spotify.exceptions.WebApiException;
 import com.wrapper.spotify.models.Artist;
 import com.wrapper.spotify.models.Image;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ import java.util.Map;
 @Controller
 @EnableAutoConfiguration
 public class WelcomeController {
-
+    private static final Logger LOGGER = LogManager.getLogger(WelcomeController.class);
     private SpotifyAuthorizer spotifyAuthorizer = new SpotifyAuthorizer();
     private SpotifyAPI spotifyAPI = new SpotifyAPI(spotifyAuthorizer.getApi());
 
@@ -28,13 +30,12 @@ public class WelcomeController {
     public String welcome(Map<String, Object> model) throws IOException, WebApiException {
         try {
             model.put("time", new Date());
-            model.put("name", spotifyAPI.getUser().getDisplayName());
+            model.put("name", spotifyAPI.getUserDisplayName());
             model.put("playlists", spotifyAPI.getPlayLists());
             return "welcome";
         } catch (BadRequestException e) {
             if (e.getMessage().equals("401")) {
-                System.out.println(e);
-                System.out.println("I think we are logged out. Let's go to /login");
+                LOGGER.info("I think we are logged out. Let's go to /login", e);
                 return "redirect:/login";
             }
             throw new BadRequestException(e.getMessage());
@@ -42,21 +43,22 @@ public class WelcomeController {
     }
 
     @RequestMapping("/playlist")
-    public String playlist(@RequestParam("id") String id, Map<String, Object> model) throws IOException, WebApiException {
-        model.put("name", spotifyAPI.getUser().getDisplayName());
+    public String playlist(@RequestParam("id") String id, @RequestParam("owner") String owner, Map<String, Object> model) throws IOException, WebApiException {
+        model.put("name", spotifyAPI.getUserDisplayName());
         model.put("id", id);
-        model.put("playlist", spotifyAPI.getPlaylist(id));
+        model.put("playlist", spotifyAPI.getPlaylist(owner, id));
         return "playlist";
     }
 
     @RequestMapping("/artist")
     public String artist(@RequestParam("id") String id, Map<String, Object> model) throws IOException, WebApiException {
-        model.put("name", spotifyAPI.getUser().getDisplayName());
+        model.put("name", spotifyAPI.getUserDisplayName());
         model.put("id", id);
         Artist artist = spotifyAPI.getArtist(id);
         model.put("artist", artist);
         model.put("image", getRightSizedImage(artist));
         model.put("albums", spotifyAPI.getAlbums(id));
+        model.put("singles", spotifyAPI.getSingles(id));
         return "artist";
     }
 
@@ -109,7 +111,7 @@ public class WelcomeController {
 
     @RequestMapping("/callback")
     String callback(@RequestParam("code") String code, @RequestParam String state) {
-        System.out.println("We got a callback from Spotify!");
+        LOGGER.debug("We got a callback from Spotify with code " + code + " and state " + state);
         //TODO: Assert state in a nicer way?
         if (!spotifyAuthorizer.state.equals(state)) {
             throw new RuntimeException("State check failed. Possible Cross Site Request Forgery.");
